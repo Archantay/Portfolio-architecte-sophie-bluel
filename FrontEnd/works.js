@@ -5,7 +5,6 @@ function afficherGalerie() {
     
         const portfolio = document.getElementById('portfolio');
   
-    
         let gallery = portfolio.querySelector('.gallery');
         if (!gallery) {
           gallery = document.createElement('div');
@@ -13,27 +12,15 @@ function afficherGalerie() {
           portfolio.appendChild(gallery);
         }
   
-        
         data.forEach(projets => {
-          
           const figure = document.createElement('figure');
-  
-        
           const img = document.createElement('img');
           img.src = projets.imageUrl; 
-          img.alt = projets.nom;
-  
-          
+          img.alt = projets.title;
           figure.appendChild(img);
-  
-          
           const figcaption = document.createElement('figcaption');
-          figcaption.textContent = projets.nom;
-  
-        
+          figcaption.textContent = projets.title;
           figure.appendChild(figcaption);
-  
-    
           gallery.appendChild(figure);
         });
       })
@@ -42,5 +29,4 @@ function afficherGalerie() {
       });
   }
   
-
   document.addEventListener('DOMContentLoaded', afficherGalerie);
