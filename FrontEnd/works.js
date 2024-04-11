@@ -19,7 +19,7 @@ function afficherGalerie(categorieSelectionnee) {
       }
 
       data.forEach(projets => {
-        if (categorieSelectionnee === 'Tous' || projets.category === categorieSelectionnee) {
+        if (categorieSelectionnee === 'Tous' || projets.category.name === categorieSelectionnee) {
           const figure = document.createElement('figure');
           const img = document.createElement('img');
           img.src = projets.imageUrl;
