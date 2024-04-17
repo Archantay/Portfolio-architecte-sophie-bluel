@@ -1,14 +1,15 @@
 const portfolio = document.getElementById('portfolio');
 
+document.addEventListener('DOMContentLoaded', () => {
+  afficherGalerie('Tous');
+});
 function afficherGalerie(categorieSelectionnee) {
 
   let gallery = portfolio.querySelector('.gallery');
   
-
   fetch('http://localhost:5678/api/works')
     .then(response => response.json()) 
     .then(data => {
-
     
       if (!gallery) {
         gallery = document.createElement('div');
@@ -36,33 +37,58 @@ function afficherGalerie(categorieSelectionnee) {
       console.error('Une erreur s\'est produite lors de la récupération des données :', error);
     });
 }
-
-fetch('http://localhost:5678/api/categories')
-  .then(response => response.json()) 
-  .then(categories => {
-    const menuCategories = document.createElement('div');
-    menuCategories.classList.add('categories');
-    const portfolio = document.getElementById('portfolio');
-    portfolio.appendChild(menuCategories);
-    
-    const btnTous = document.createElement('button');
-    btnTous.textContent = 'Tous';
-    btnTous.addEventListener('click', () => {
-      afficherGalerie('Tous');
-      console.log('Afficher tous les projets');
-    });
-    menuCategories.appendChild(btnTous);
-    
-    categories.forEach(category => {
-      const btnCategorie = document.createElement('button');
-      btnCategorie.textContent = category.name;
-      btnCategorie.addEventListener('click', () => {
-        afficherGalerie(category.name);
-        console.log('Afficher les projets de la catégorie :', category.name);
+function fetchCategories() {
+  fetch('http://localhost:5678/api/categories')
+    .then(response => response.json()) 
+    .then(categories => {
+      const menuCategories = document.createElement('div');
+      menuCategories.classList.add('categories');
+      const portfolio = document.getElementById('portfolio');
+      portfolio.appendChild(menuCategories);
+      
+      const btnTous = document.createElement('button');
+      btnTous.textContent = 'Tous';
+      btnTous.addEventListener('click', () => {
+        afficherGalerie('Tous');
+        console.log('Afficher tous les projets');
       });
-      menuCategories.appendChild(btnCategorie);
+      menuCategories.appendChild(btnTous);
+      
+      categories.forEach(category => {
+        const btnCategorie = document.createElement('button');
+        btnCategorie.textContent = category.name;
+        btnCategorie.addEventListener('click', () => {
+          afficherGalerie(category.name);
+          console.log('Afficher les projets de la catégorie :', category.name);
+        });
+        menuCategories.appendChild(btnCategorie);
+      });
+    })
+    .catch(error => {
+      console.error('Une erreur s\'est produite lors de la récupération des catégories :', error )
     });
-  })
-  .catch(error => {
-    console.error('Une erreur s\'est produite lors de la récupération des catégories :', error )
-  });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+      const menuCategories = document.querySelector('.categories');
+      if (menuCategories) {
+          menuCategories.style.display = 'none';
+      }
+  } else {
+      fetchCategories();
+  }
+      
+  const loginLink = document.getElementById('loginLink');
+  if (loginLink) {
+      loginLink.textContent = 'Logout';
+     
+      loginLink.addEventListener('click', () => {
+          localStorage.removeItem('token');
+          window.location.href = 'index.html';
+      });
+  }
+  
+
+});
