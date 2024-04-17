@@ -13,7 +13,7 @@ dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
+figure, figcaption, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
 	margin: 0;
@@ -56,11 +56,11 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: #FFFEF8;
 }
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
 }
 section {
 	margin: 50px 0
@@ -92,11 +92,16 @@ nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
+	gap: 40px;
 
 }
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
+}
+nav a {
+	text-decoration: none;
+	color: black;
 }
 
 li:hover {
@@ -211,10 +216,64 @@ input[type="submit"]{
 	text-align: center;
 	border-radius: 60px ;
 }
-
+footer {
+	background-color: #FFFfff;
+	align-content: center;
+}
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	margin: 2em;
 }
 
+
+/*Page de connexion*/
+.connexion {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 40px; 
+	margin-top: 140px;
+}
+.connexion h1 {
+	color: #1D6154;
+	font-family: 'syne';
+	font-size: 30px;
+	font-weight: 700;
+}
+#loginForm {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 40px;
+	width: 379px;
+}
+.champsConnexion {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	width: 100%;
+}
+form label {
+	font-family: 'work sans';
+	font-size: 14px;
+}
+form input {
+	height: 51px;
+	border: none;
+	box-shadow: 0px 4px 14px 0px #00000017;
+}
+.connexion button {
+	font-family: 'syne';
+	font-size: 14px;
+	background-color: #1D6154;
+	border-radius: 25px;
+	padding: 10px 35px;
+	border: none;
+	color: white;
+}
+.connexion a {
+	color: black;
+	font-family: 'Work sans';
+	font-weight: 500;
+}
