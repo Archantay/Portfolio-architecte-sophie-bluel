@@ -79,7 +79,19 @@ h1 > span {
 	font-family: 'Work Sans';
 	font-size:10px;
 	letter-spacing: 0.1em;
-;
+}
+#titreGallery {
+	display: flex;
+	gap: 20px;
+	justify-content: center;
+}
+#titreGallery button {
+	display: flex;
+	gap: 10px;
+	border: none;
+	background-color: #FFFEF8;
+	align-items: center;
+	font-weight: 200;
 }
 
 h2{
