@@ -93,7 +93,6 @@ h1 > span {
 	align-items: center;
 	font-weight: 200;
 }
-
 h2{
 	font-family: 'Syne';
 	font-weight: 700;
@@ -145,6 +144,59 @@ li:hover {
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
+}
+.modal {
+	display: none; /* Masquer la modale par défaut */
+	position: fixed; /* Position fixe pour recouvrir toute la page */
+	z-index: 1; /* Position en avant-plan */
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto; /* Ajouter un défilement si nécessaire */
+	background-color: rgba(0,0,0,0); /* Fond semi-transparent */
+}
+.modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* Centrer verticalement */
+	padding: 20px;
+	width: 42%; /* Largeur de la modale */
+	border-radius: 15px;
+}
+.modaletitle {
+	font-family: Work Sans;
+	font-size: 26px;
+	font-weight: 400;
+	line-height: 30.5px;
+	text-align: center;
+	color: black;
+	margin-top: 25px;
+}
+.thumbnails {
+	display: flex;
+	justify-content: space-between;
+	padding-bottom: 10px;
+}
+.modal-divider {
+	margin-top: 20px ;
+	border: none;
+	border-top: 1px solid black;
+
+}
+#addProjectBtn {
+	margin-top: 20px;
+}
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
 }
 .categories {
 	display: flex;
