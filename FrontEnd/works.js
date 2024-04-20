@@ -59,8 +59,17 @@ function fetchCategories() {
             iconModifier.classList.add('fa-regular', 'fa-pen-to-square');
             btnModifier.insertBefore(iconModifier, btnModifier.firstChild);
             btnModifier.addEventListener('click', () => {
-                // Ajouter ici la logique pour la modification
-                console.log('Bouton Modifier cliqué');
+                var modal = document.getElementById("myModal");
+                var span = document.getElementsByClassName("close")[0];
+                modal.style.display = "block";
+                span.onclick = function() {
+                    modal.style.display = "none";
+                }
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
             });
             if (!token) {
               btnModifier.style.display = 'none';
