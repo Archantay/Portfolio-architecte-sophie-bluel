@@ -56,13 +56,42 @@
 		</section>
 		<div id="myModal" class="modal">
 			<div class="modal-content">
-				<span class="close">&times;</span>
+				<span id="close" class="close">&times;</span>
 				<h2 class="modaletitle">Gallerie photo</h2>
 				<div class="thumbnails">
 
 				</div>
 				<hr class="modal-divider">
 				<button id="addProjectBtn">Ajouter une photo</button>
+			</div>
+			<div class="modal-content-2">
+				<i id="backArrow" class="fa-solid fa-arrow-left"></i>
+				<span id="clos" class="close">&times;</span>
+				<h2 class="modaletitle">Ajout photo</h2>
+				<form id="FormAjout" class="modal-formulaire">
+					<div class="form-img">
+						<div class="image-preview">
+						<i class="fa-regular fa-image fa-5xl"></i>
+						<button class="btnForm">
+							+ Ajouter photo
+							<input type="file" id="imageProjet" name="image" class="form-control-img" accept="image/png, image/jpeg">
+						</button>
+						<p>jpg, png : 4mo max</p>
+					</div>
+					</div>
+					<div class="form-group">
+						<label for="titreProjet">Titre</label>
+						<input type="text" id="titreProjet" name="title" class="form-control-input" required>
+					</div>
+					<div class="form-groupCat">
+						<label for="categorieProjet">Catégorie</label>
+						<select id="categorieProjet" name="category" class="form-control-input" required>
+						<option value=""></option>
+						</select>
+					</div>
+					<hr class="modal-divider-2">
+					<button id="BtnValiderProject" >Valider</button>
+				</form>
 			</div>
 		</div>
 		<section id="contact">
