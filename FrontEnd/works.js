@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     afficherGalerie();
     checkUserAuthentication();
     closeModal();
-    
+
     titreInput.addEventListener('input', validerFormulaire);
     imageInput.addEventListener('change', validerFormulaire);
     categorieSelect.addEventListener('change', validerFormulaire);
@@ -68,7 +68,6 @@ function afficherGalerie(categorieSelectionnee = 'Tous') {
 }
 
 function fetchCategories() {
-
     fetch('http://localhost:5678/api/categories')
         .then(response => response.json())
         .then(categories => {
@@ -82,7 +81,7 @@ function fetchCategories() {
             menuCategories.classList.add('categories');
             const portfolio = document.getElementById('portfolio');
 
-            
+
             if (token) {
                 menuCategories.style.display = 'none';
             }
@@ -239,7 +238,7 @@ function afficherPreview(imageInput) {
 
 
 
-function validerFormulaire() {    
+function validerFormulaire() {
     const titreValide = titreInput.value.trim() !== '';
     const imageValide = imageInput.files && imageInput.files[0] && (imageInput.files[0].size <= 4 * 1024 * 1024) && (imageInput.accept.includes(imageInput.files[0].type));
     const categorieValide = categorieSelect.value !== '';
@@ -253,51 +252,32 @@ function validerFormulaire() {
 
 function soumettreFormulaire(event) {
     event.preventDefault();
-    
-    // Récupérer la valeur de la catégorie sélectionnée
     const categorieValue = parseInt(categorieSelect.value);
-    console.log("Valeur de la catégorie sélectionnée :", categorieValue);
 
     if (!isNaN(categorieValue)) {
-        // Créer un objet FormData
         const formData = new FormData();
-
-        // Récupérer et vérifier le titre
         const titreValue = titreInput.value.trim();
         if (titreValue !== '') {
             formData.append('title', titreValue);
-            console.log("Titre du projet :", titreValue);
         } else {
-            console.error('Le titre du projet est vide.');
-            return; // Arrêter l'exécution de la fonction
+            return;
         }
-
-        // Vérifier si une image a été sélectionnée
         if (imageInput.files.length > 0) {
             const imageFile = imageInput.files[0];
-            // Vérifier la taille de l'image
             if (imageFile.size <= 4 * 1024 * 1024) {
-                // Vérifier le type de fichier
                 if (imageInput.accept.includes(imageFile.type)) {
                     formData.append('image', imageFile);
-                    console.log("Image du projet :", imageFile);
                 } else {
-                    console.error('Le type de fichier sélectionné n\'est pas autorisé.');
-                    return; // Arrêter l'exécution de la fonction
+                    return;
                 }
             } else {
-                console.error('La taille de l\'image sélectionnée dépasse la limite autorisée.');
-                return; // Arrêter l'exécution de la fonction
+                return;
             }
         } else {
-            console.error('Aucune image sélectionnée.');
-            return; // Arrêter l'exécution de la fonction
+            return;
         }
-
-        // Ajouter la catégorie
         formData.append('category', categorieValue);
 
-        // Envoyer les données à l'API
         fetch('http://localhost:5678/api/works', {
             method: 'POST',
             headers: {
@@ -305,16 +285,14 @@ function soumettreFormulaire(event) {
             },
             body: formData
         })
-        .then(response => response.json())
-        .then(nouveauProjet => {
-            console.log("Réponse de l'API :", nouveauProjet);
-            form.reset();
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'envoi du formulaire : ', error);
-        });
+            .then(response => response.json())
+            .then(nouveauProjet => {
+                form.reset();
+            })
+            .catch(() => {
+                alert('Une erreur est survenue')
+            });
     } else {
-        console.error('La valeur de la catégorie sélectionnée n\'est pas valide.');
     }
 }
 
@@ -325,20 +303,17 @@ function supprimerElement(id) {
             'Authorization': `Bearer ${token}`
         }
     })
-    .then(response => {
-        if (response.ok) {
-            const elementASupprimer = document.getElementById(`projet-${id}`);
-            if (elementASupprimer) {
-                elementASupprimer.remove();
+        .then(response => {
+            if (response.ok) {
+                const elementASupprimer = document.getElementById(`projet-${id}`);
+                if (elementASupprimer) {
+                    elementASupprimer.remove();
+                } else {
+                }
             } else {
-                console.error(`Impossible de trouver l'élément avec l'identifiant ${id} sur la page.`);
             }
-            console.log(`L'élément avec l'identifiant ${id} a été supprimé avec succès.`);
-        } else {
-            console.error(`La suppression de l'élément avec l'identifiant ${id} a échoué.`);
-        }
-    })
-    .catch(error => {
-        console.error('Une erreur s\'est produite lors de la suppression de l\'élément : ', error);
-    });
+        })
+        .catch(() => {
+            alert('Une erreur est survenue')
+        });
 }
