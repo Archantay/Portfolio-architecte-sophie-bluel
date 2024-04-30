@@ -1,11 +1,39 @@
 const portfolio = document.getElementById('portfolio');
+const token = localStorage.getItem('token');
 let miniaturesAppelees = false;
+const modal = document.getElementById("myModal");
+const span = document.querySelector(".close");
+const clos = document.getElementById("clos");
+const modalContent1 = document.querySelector('.modal-content');
+const modalContent2 = document.querySelector('.modal-content-2');
+const btnForm = document.querySelector('.btnForm');
+const imageInput = document.getElementById('imageProjet');
+const categorieSelect = document.getElementById('categorieProjet');
+const form = document.getElementById('FormAjout');
+const submitBtn = document.getElementById('BtnValiderProject');
+const titreInput = document.getElementById('titreProjet');
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchCategories();
     afficherGalerie();
     checkUserAuthentication();
+    closeModal();
+    
+    titreInput.addEventListener('input', validerFormulaire);
+    imageInput.addEventListener('change', validerFormulaire);
+    categorieSelect.addEventListener('change', validerFormulaire);
+    submitBtn.addEventListener('click', soumettreFormulaire);
+    validerFormulaire();
 });
+
+function closeModal() {
+    modal.style.display = "none";
+    modalContent1.style.display = 'none';
+    modalContent2.style.display = 'none';
+
+    const form = document.getElementById('FormAjout');
+    form.reset();
+}
 
 function afficherGalerie(categorieSelectionnee = 'Tous') {
     let gallery = portfolio.querySelector('.gallery');
@@ -22,6 +50,7 @@ function afficherGalerie(categorieSelectionnee = 'Tous') {
             data.forEach(projet => {
                 if (categorieSelectionnee === 'Tous' || projet.category.name === categorieSelectionnee) {
                     const figure = document.createElement('figure');
+                    figure.id = `projet-${projet.id}`;
                     const img = document.createElement('img');
                     img.src = projet.imageUrl;
                     img.alt = projet.title;
@@ -39,16 +68,21 @@ function afficherGalerie(categorieSelectionnee = 'Tous') {
 }
 
 function fetchCategories() {
-    let menuCategories;
 
     fetch('http://localhost:5678/api/categories')
         .then(response => response.json())
         .then(categories => {
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categorieSelect.appendChild(option);
+            });
             const menuCategories = document.createElement('div');
             menuCategories.classList.add('categories');
             const portfolio = document.getElementById('portfolio');
 
-            const token = localStorage.getItem('token');
+            
             if (token) {
                 menuCategories.style.display = 'none';
             }
@@ -60,19 +94,20 @@ function fetchCategories() {
             iconModifier.classList.add('fa-regular', 'fa-pen-to-square');
             btnModifier.insertBefore(iconModifier, btnModifier.firstChild);
             btnModifier.addEventListener('click', () => {
-                var modal = document.getElementById("myModal");
-                var span = document.getElementsByClassName("close")[0];
-                modal.style.display = "block";
-                span.onclick = function () {
-                    modal.style.display = "none";
-                }
-                window.onclick = function (event) {
-                    if (event.target == modal) {
-                        modal.style.display = "none";
-                    }
-                }
+                afficherModal(modalContent1)
                 afficherMiniatures()
 
+                const addProjectBtn = document.getElementById('addProjectBtn');
+                addProjectBtn.addEventListener('click', () => {
+                    afficherModal(modalContent2)
+                });
+
+                btnForm.addEventListener('click', () => {
+                    imageInput.click();
+                });
+                imageInput.addEventListener('change', () => {
+                    afficherPreview(imageInput);
+                });
             });
             if (!token) {
                 btnModifier.style.display = 'none';
@@ -102,7 +137,6 @@ function fetchCategories() {
 }
 
 function checkUserAuthentication() {
-    const token = localStorage.getItem('token');
     const loginLink = document.getElementById('loginLink');
 
     if (loginLink) {
@@ -112,6 +146,8 @@ function checkUserAuthentication() {
                 localStorage.removeItem('token');
                 location.reload();
             });
+            const titreGallery = document.getElementById('titreGallery');
+            titreGallery.classList.add('connected-user');
         } else {
             loginLink.textContent = 'Login';
             loginLink.addEventListener('click', () => {
@@ -123,13 +159,13 @@ function checkUserAuthentication() {
 
 function afficherMiniatures() {
     const thumbnailsContainer = document.querySelector('.thumbnails');
-
     if (!miniaturesAppelees) {
         fetch('http://localhost:5678/api/works')
             .then(response => response.json())
             .then(data => {
                 data.forEach(projet => {
                     const miniature = document.createElement('img');
+                    miniature.id = `miniature-${projet.id}`;
                     miniature.src = projet.imageUrl;
                     miniature.alt = projet.title;
                     miniature.classList.add('thumbnail');
@@ -137,7 +173,7 @@ function afficherMiniatures() {
                     const deleteIcon = document.createElement('i');
                     deleteIcon.classList.add('fas', 'fa-trash-alt', 'fa-xs', 'delete-icon');
                     deleteIcon.addEventListener('click', () => {
-                        // Action à effectuer pour supprimer un projet
+                        supprimerElement(projet.id);
                     });
 
                     const thumbnailContainer = document.createElement('div');
@@ -155,3 +191,154 @@ function afficherMiniatures() {
             });
     }
 };
+
+function afficherModal(contenuModal) {
+    modal.style.display = 'block'
+    modalContent1.style.display = 'none';
+    modalContent2.style.display = 'none';
+    contenuModal.style.display = 'block';
+    if (contenuModal === modalContent2) {
+        const addProjectBtn = document.getElementById('addProjectBtn');
+        addProjectBtn.addEventListener('click', () => {
+            modalContent1.style.display = 'none';
+            modalContent2.style.display = 'block';
+        });
+    }
+    const backArrow = document.getElementById('backArrow');
+    backArrow.addEventListener('click', () => {
+        modalContent1.style.display = 'block';
+        modalContent2.style.display = 'none';
+
+    })
+    span.onclick = closeModal;
+    clos.onclick = closeModal;
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+}
+
+function afficherPreview(imageInput) {
+    const preview = document.querySelector('.image-preview');
+    if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Image sélectionnée';
+            img.classList.add('preview-img');
+            preview.innerHTML = '';
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    }
+}
+
+
+
+
+function validerFormulaire() {    
+    const titreValide = titreInput.value.trim() !== '';
+    const imageValide = imageInput.files && imageInput.files[0] && (imageInput.files[0].size <= 4 * 1024 * 1024) && (imageInput.accept.includes(imageInput.files[0].type));
+    const categorieValide = categorieSelect.value !== '';
+
+    if (titreValide && imageValide && categorieValide) {
+        submitBtn.disabled = false;
+    } else {
+        submitBtn.disabled = true;
+    }
+}
+
+function soumettreFormulaire(event) {
+    event.preventDefault();
+    
+    // Récupérer la valeur de la catégorie sélectionnée
+    const categorieValue = parseInt(categorieSelect.value);
+    console.log("Valeur de la catégorie sélectionnée :", categorieValue);
+
+    if (!isNaN(categorieValue)) {
+        // Créer un objet FormData
+        const formData = new FormData();
+
+        // Récupérer et vérifier le titre
+        const titreValue = titreInput.value.trim();
+        if (titreValue !== '') {
+            formData.append('title', titreValue);
+            console.log("Titre du projet :", titreValue);
+        } else {
+            console.error('Le titre du projet est vide.');
+            return; // Arrêter l'exécution de la fonction
+        }
+
+        // Vérifier si une image a été sélectionnée
+        if (imageInput.files.length > 0) {
+            const imageFile = imageInput.files[0];
+            // Vérifier la taille de l'image
+            if (imageFile.size <= 4 * 1024 * 1024) {
+                // Vérifier le type de fichier
+                if (imageInput.accept.includes(imageFile.type)) {
+                    formData.append('image', imageFile);
+                    console.log("Image du projet :", imageFile);
+                } else {
+                    console.error('Le type de fichier sélectionné n\'est pas autorisé.');
+                    return; // Arrêter l'exécution de la fonction
+                }
+            } else {
+                console.error('La taille de l\'image sélectionnée dépasse la limite autorisée.');
+                return; // Arrêter l'exécution de la fonction
+            }
+        } else {
+            console.error('Aucune image sélectionnée.');
+            return; // Arrêter l'exécution de la fonction
+        }
+
+        // Ajouter la catégorie
+        formData.append('category', categorieValue);
+
+        // Envoyer les données à l'API
+        fetch('http://localhost:5678/api/works', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(nouveauProjet => {
+            console.log("Réponse de l'API :", nouveauProjet);
+            form.reset();
+        })
+        .catch(error => {
+            console.error('Erreur lors de l\'envoi du formulaire : ', error);
+        });
+    } else {
+        console.error('La valeur de la catégorie sélectionnée n\'est pas valide.');
+    }
+}
+
+function supprimerElement(id) {
+    fetch(`http://localhost:5678/api/works/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            const elementASupprimer = document.getElementById(`projet-${id}`);
+            if (elementASupprimer) {
+                elementASupprimer.remove();
+            } else {
+                console.error(`Impossible de trouver l'élément avec l'identifiant ${id} sur la page.`);
+            }
+            console.log(`L'élément avec l'identifiant ${id} a été supprimé avec succès.`);
+        } else {
+            console.error(`La suppression de l'élément avec l'identifiant ${id} a échoué.`);
+        }
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite lors de la suppression de l\'élément : ', error);
+    });
+}
