@@ -58,10 +58,8 @@ function loginUser(email, password, emailError, passwordError) {
     .then(data => {
         localStorage.setItem('token', data.token);
         window.location.href = 'index.html';
-        console.log('Connexion réussie:', data);
     })
     .catch(error => {
-        console.error('Erreur:', error.message);
         emailError.textContent = 'E-mail invalide';
         passwordError.textContent = 'Mot de passe invalide';
         displayError(error.message);

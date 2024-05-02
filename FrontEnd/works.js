@@ -62,7 +62,7 @@ function afficherGalerie(categorieSelectionnee = 'Tous') {
                 }
             });
         })
-        .catch(error => {
+        .catch(() => {
             alert('Une erreur est survenue')
         });
 }
@@ -207,7 +207,6 @@ function afficherModal(contenuModal) {
     backArrow.addEventListener('click', () => {
         modalContent1.style.display = 'block';
         modalContent2.style.display = 'none';
-
     })
     span.onclick = closeModal;
     clos.onclick = closeModal;
@@ -286,9 +285,6 @@ function soumettreFormulaire(event) {
             body: formData
         })
             .then(response => response.json())
-            .then(nouveauProjet => {
-                form.reset();
-            })
             .catch(() => {
                 alert('Une erreur est survenue')
             });
